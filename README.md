@@ -1,2 +1,2 @@
 # Reddit_NLP
-Cross-subreddit NLP sentiment analysis
+Cross-subreddits NLP sentiment analysis
