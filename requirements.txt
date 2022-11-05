@@ -1,0 +1,8 @@
+pandas
+praw
+# plotly
+seaborn
+nltk
+matplotlib
+jupyterlab
+ipykernel
