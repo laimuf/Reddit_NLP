@@ -9,23 +9,27 @@ reddit = praw.Reddit(client_id=client_id,
 
 def _save_posts(posts):
     # Create table columns that we will fill
-    columns = ['created_utc', 'Title','score','num_comments', 
-                'Upvote_ratio','NSFW', 'selftext', 'link_flair_css_class']
-    df = pd.DataFrame(columns=columns)
+    posts_data = {
+                    'created_utc': [], 
+                    'title' : [], 
+                    'score': [],
+                    'num_comments': [],
+                    'upvote_ratio': [], 
+                    'nsfw' : [], 
+                    'selftext': [],
+    }
 
     for post in posts:
-        print(post.title)
-        row_to_add = {'created_utc': post.created_utc, 
-                    'Title' : post.title, 
-                    'score': post.score,
-                    'num_comments': post.num_comments,
-                    'upvote_ratio': post.upvote_ratio, 
-                    'NSFW' :post.over_18, 
-                    'selftext': post.selftext,
-                    'link_flair_css_class:': post.link_flair_css_class}
-        df = pd.concat([df, pd.DataFrame(row_to_add, index=[0])])
+        posts_data['created_utc'].append(post.created_utc)
+        posts_data['title'].append(post.title)
+        posts_data['score'].append(post.score)
+        posts_data['num_comments'].append(post.num_comments)
+        posts_data['upvote_ratio'].append(post.upvote_ratio)
+        posts_data['nsfw'].append(post.over_18)
+        posts_data['selftext'].append(post.selftext)
+
+    df = pd.DataFrame(posts_data)
     
-    df.to_csv('hotpost_Muslim_data.csv')
     return df
 
 
@@ -42,8 +46,15 @@ def save_posts(subreddit,
         posts = reddit_subreddit(subreddit).new(limit=limit)
         df = _save_posts(posts)
 
+    df.to_excel(f'{post_type}_{subreddit}_{limit}.xlsx')
+
     return df, posts
 
-df, posts = save_posts("exmuslim", post_type='hot', limit=1)
 
+if __name__ == "__main__":
 
+    subreddit = "mademesmile"
+    post_type = 'hot'
+    limit = 51
+
+    df, posts = save_posts(subreddit=subreddit, post_type=post_type, limit=limit)
