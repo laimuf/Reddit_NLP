@@ -1,14 +1,16 @@
-
 import praw
+import os
+from datetime import datetime
 import pandas as pd
 from praw_credentials import client_id, client_secret, user_agent
+from config import SUBREDDIT, POST_TYPE, LIMIT
 
 reddit = praw.Reddit(client_id=client_id, 
         client_secret=client_secret, 
         user_agent=user_agent)
 
 def _save_posts(posts):
-    # Create table columns that we will fill
+    # Create table columns to fill
     posts_data = {
                     'created_utc': [], 
                     'title' : [], 
@@ -36,25 +38,36 @@ def _save_posts(posts):
 def save_posts(subreddit, 
                 post_type, 
                 limit=50, 
-                reddit_subreddit=reddit.subreddit):
+                reddit_subreddit=reddit.subreddit,
+                timestamp=True,
+                save_dir = "data/",):
 
     if post_type == 'hot':
         posts = reddit_subreddit(subreddit).hot(limit=limit)
-        df = _save_posts(posts)
         
     elif post_type == 'new':
         posts = reddit_subreddit(subreddit).new(limit=limit)
-        df = _save_posts(posts)
+    df = _save_posts(posts)
 
-    df.to_excel(f'{post_type}_{subreddit}_{limit}.xlsx')
+    
+
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+
+    if timestamp:
+            
+        # Get the current time
+        now = datetime.now()
+        # Format the datetime object as a string
+        timestamp_str = now.strftime("_%Y_%m_%d_%H_%M_%S")
+        
+    df.to_excel(f'{save_dir}{subreddit}_{post_type}_{limit}posts{timestamp_str}.xlsx')
 
     return df, posts
 
 
 if __name__ == "__main__":
 
-    subreddit = "mademesmile"
-    post_type = 'hot'
-    limit = 51
-
-    df, posts = save_posts(subreddit=subreddit, post_type=post_type, limit=limit)
+    df, all_posts = save_posts(subreddit=SUBREDDIT, 
+                                post_type=POST_TYPE, 
+                                limit=LIMIT)
