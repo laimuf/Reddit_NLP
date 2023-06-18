@@ -1,1 +1,4 @@
 praw_credentials.py
+data/
+.venv
+__*
