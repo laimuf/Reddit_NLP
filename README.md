@@ -27,7 +27,7 @@ pip install -r requirements.txt
 
 ## Run the app
 
-Set the desired subreddit, post type and limit (number of results) in `app.py`, then run this script with
+Set the desired subreddit, post type and limit (number of results) in `config.py`, then run this script with
 ```bash
 python app.py
 ```
