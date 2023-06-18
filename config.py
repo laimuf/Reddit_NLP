@@ -1,3 +1,3 @@
 SUBREDDIT = "nextfuckinglevel"
-POST_TYPE = 'hot'
-LIMIT = 100
+POST_TYPES = ['top', 'hot', 'new']
+LIMIT = 100  # None for all posts
