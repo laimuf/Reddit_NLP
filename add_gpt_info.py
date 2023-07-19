@@ -1,7 +1,16 @@
 import time 
 
 import openai
-from praw_credentials import openai_key
+from credentials import openai_key
+
+from config import (
+    model,
+    system_prompt,
+    question,
+    n_posts,
+    file_name,
+    file_name_gpt,
+)
 
 from tqdm import tqdm
 
@@ -9,21 +18,10 @@ import pandas as  pd
 
 openai.api_key = openai_key
 
-model = "gpt-3.5-turbo"
-question = ("Determine if the following post contains themes of de-conversion or doubts about islam. If it does, then comment about them. "
-          "If it doesn't, then only return the python boolean False and nothing else:\n"
-)
-n_posts = 15
-system_prompt = "You are a qualitative researcher"
-file_name = "data/exmuslim_hot_Noneposts_2023_06_18_18_25_48.xlsx"
-file_name_gpt = f"data/exmuslim_hot_Noneposts_2023_06_18_18_25_48_gpt_{n_posts}.xlsx"
-
-
 
 if __name__ == "__main__":
 
     df = pd.read_excel(file_name)
-
 
     df = df.iloc[1:n_posts+1]
 
