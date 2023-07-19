@@ -1,5 +1,5 @@
 import time 
-
+import json
 import openai
 from credentials import openai_key
 
@@ -25,7 +25,8 @@ if __name__ == "__main__":
 
     df = df.iloc[1:n_posts+1]
 
-    responses = []
+    responses_topic = []
+    responses_comments = []
 
     for id, row in tqdm(df.iterrows()):
         time.sleep(1)
@@ -33,7 +34,7 @@ if __name__ == "__main__":
         title_reddit_post = row.title
         body_reddit_post = row.selftext
 
-        user_question = f"{question} title: {title_reddit_post}\n body: {body_reddit_post}"
+        user_question = f"{question}\n\n Reddit post title: {title_reddit_post}\n body: {body_reddit_post}"
 
         response = openai.ChatCompletion.create(
           model=model,
@@ -42,12 +43,14 @@ if __name__ == "__main__":
                 {"role": "user", "content": user_question},
             ]
         )
-        responses.append(response['choices'][0]['message']['content'])
+        gpt_response = response['choices'][0]['message']['content']
+        gpt_response_dict = json.loads(gpt_response)
+        responses_topic.append(gpt_response_dict["topic"])
+        responses_comments.append(gpt_response_dict["comment"])
 
         df_checkpoint = df.iloc[: id].copy()
-        df_checkpoint["gpt_comment"] = responses
+        df_checkpoint["gpt_topic"] = responses_topic
+        df_checkpoint["gpt_comment"] = responses_comments
         df_checkpoint.to_excel(file_name_gpt)
 
-    df["gpt_comment"] = responses
 
-    df.to_excel(file_name_gpt)

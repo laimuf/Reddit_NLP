@@ -1,5 +1,6 @@
 credentials.py
 __*
 data/*
+.vscode
 .venv
 venv
