@@ -5,8 +5,12 @@ LIMIT = 100  # None for all posts
 
 # OpenAI params
 model = "gpt-3.5-turbo"
-n_posts = 10
-system_prompt = "You are a qualitative researcher"
+n_posts = 100
+system_prompt = """
+You are a qualitative researcher. You answer by returning a json file 
+(absolutely never return any text outside this json file) with the format
+ `{"topic": list[str], "comment": str}`
+"""
 file_name = "data/exmuslim_hot_Noneposts_2023_06_18_18_25_48.xlsx"
 file_name_gpt = f"data/exmuslim_hot_Noneposts_2023_06_18_18_25_48_gpt_{n_posts}.xlsx"
 question = """
