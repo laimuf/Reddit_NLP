@@ -5,22 +5,12 @@ LIMIT = 100  # None for all posts
 
 # OpenAI params
 model = "gpt-3.5-turbo"
-n_posts = 100
-system_prompt = """
-You are a qualitative researcher. You answer by returning a json file 
-(absolutely never return any text outside this json file) with the format
- `{"topic": list[str], "comment": str}`
-"""
+n_posts = 10
 file_name = "data/exmuslim_hot_Noneposts_2023_06_18_18_25_48.xlsx"
 file_name_gpt = f"data/exmuslim_hot_Noneposts_2023_06_18_18_25_48_gpt_{n_posts}.xlsx"
-question = """
-I'll show you a reddit post at the bottom. 
-Return a json file (absolutely never return any text outside this json file) with the format
- `{"topic": list[str], "comment": str}` 
-where `topic` key list contains any of "Intellectual", "Seeking support" and "Negotiating apostasy" as values 
-if you think the reddit post contains any of these topics (leave list empty if no topic is found). 
-The value of the "comment" key is any explanation you have for these topic being in the reddit post. 
-This is a definition of the three topics
+
+response_format = """`{"topic": list[str], "comment": str}`"""
+topics_list = ["Intellectual", "Seeking support", "Negotiating apostasy"]
 topics_definition = {
     "Intellectual": [
         {
@@ -94,5 +84,21 @@ topics_definition = {
         }
     ]
 }
+system_prompt = f"""
+You are a qualitative researcher. You answer by returning a json file 
+(absolutely never return any text outside this json file) with the format
+ {response_format}
+"""
+
+
+question = f"""
+I'll show you a reddit post at the bottom. 
+Return a json file (absolutely never return any text outside this json file) with the format
+ {response_format} 
+where "topic" keys must be from this list {topics_list}. 
+If you think the reddit post contains any of these topics (leave list empty if no topic is found). 
+The value of the "comment" key is any explanation you have for these topic being in the reddit post. 
+This is the definition of the three topics
+{topics_definition}
 """
 

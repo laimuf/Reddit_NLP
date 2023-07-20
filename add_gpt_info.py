@@ -7,6 +7,7 @@ from config import (
     model,
     system_prompt,
     question,
+    topics_list,
     n_posts,
     file_name,
     file_name_gpt,
@@ -25,7 +26,9 @@ if __name__ == "__main__":
 
     df = df.iloc[1:n_posts+1]
 
-    responses_topic = []
+    responses_topics = {}
+    for topic in topics_list:
+        responses_topics[topic] = []
     responses_comments = []
 
     for id, row in tqdm(df.iterrows()):
@@ -45,12 +48,21 @@ if __name__ == "__main__":
         )
         gpt_response = response['choices'][0]['message']['content']
         gpt_response_dict = json.loads(gpt_response)
-        responses_topic.append(gpt_response_dict["topic"])
-        responses_comments.append(gpt_response_dict["comment"])
+
+        # Add try-except to filter bad responses
+        
+        for topic in topics_list:
+            topic_found = False
+            if topic in gpt_response_dict["topic"]:
+                topic_found = True
+            responses_topics[topic].append(topic_found)
+            df_checkpoint[topic] = responses_topics[topic]
 
         df_checkpoint = df.iloc[: id].copy()
-        df_checkpoint["gpt_topic"] = responses_topic
+        responses_comments.append(gpt_response_dict["comment"])
         df_checkpoint["gpt_comment"] = responses_comments
+
+        # Save progress
         df_checkpoint.to_excel(file_name_gpt)
 
 
