@@ -19,6 +19,8 @@ def _posts_to_df(posts):
                     'upvote_ratio': [], 
                     'nsfw' : [], 
                     'selftext': [],
+                    'author': [],
+                    'url': [],
     }
 
     for post in posts:
@@ -29,7 +31,8 @@ def _posts_to_df(posts):
         posts_data['upvote_ratio'].append(post.upvote_ratio)
         posts_data['nsfw'].append(post.over_18)
         posts_data['selftext'].append(post.selftext)
-        posts_data['selftext'].append(post.user)
+        posts_data['author'].append(post.author)
+        posts_data['url'].append(post.url)
 
     df = pd.DataFrame(posts_data)
     
@@ -66,7 +69,9 @@ def save_posts(subreddit,
         timestamp_str = ""
     
     # Save the posts
-    df.to_excel(f'{save_dir}{subreddit}_{post_type}_{limit}posts{timestamp_str}.xlsx')
+    save_reddit_data_to = f'{save_dir}{subreddit}_{post_type}_{limit}posts{timestamp_str}.xlsx'
+    print(f"{save_reddit_data_to = }")
+    df.to_excel(save_reddit_data_to)
 
     return df, posts
 
