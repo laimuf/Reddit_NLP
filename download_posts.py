@@ -29,6 +29,7 @@ def _posts_to_df(posts):
         posts_data['upvote_ratio'].append(post.upvote_ratio)
         posts_data['nsfw'].append(post.over_18)
         posts_data['selftext'].append(post.selftext)
+        posts_data['selftext'].append(post.user)
 
     df = pd.DataFrame(posts_data)
     
