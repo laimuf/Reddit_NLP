@@ -1,4 +1,6 @@
-praw_credentials.py
-data/
-.venv
+credentials.py
 __*
+data/*
+.vscode
+.venv
+venv

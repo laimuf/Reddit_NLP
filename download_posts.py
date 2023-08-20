@@ -2,12 +2,12 @@ import praw
 import os
 from datetime import datetime
 import pandas as pd
-from praw_credentials import client_id, client_secret, user_agent
+from credentials import praw_client_id, praw_client_secret, praw_user_agent
 from config import SUBREDDIT, POST_TYPES, LIMIT
 
-reddit = praw.Reddit(client_id=client_id, 
-        client_secret=client_secret, 
-        user_agent=user_agent)
+reddit = praw.Reddit(client_id=praw_client_id, 
+        client_secret=praw_client_secret, 
+        user_agent=praw_user_agent)
 
 def _posts_to_df(posts):
     # Create table columns to fill
