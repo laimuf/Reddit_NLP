@@ -51,7 +51,7 @@ def _posts_to_df(posts, fetch_comments):
 
 def save_posts(subreddit, 
                 post_type, 
-                limit=50, 
+                limit, 
                 reddit_subreddit=reddit.subreddit,
                 timestamp=True,
                 save_dir = "data/",
@@ -80,6 +80,8 @@ def save_posts(subreddit,
         timestamp_str = ""
     
     # Save the posts
+    if limit is None:
+        limit = "all"
     save_reddit_data_to = f'{save_dir}{subreddit}_{post_type}_{limit}_posts{timestamp_str}.xlsx'
     print(f"{save_reddit_data_to = }")
     df.to_excel(save_reddit_data_to)
