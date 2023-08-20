@@ -24,16 +24,18 @@ openai.api_key = openai_key
 def cost_estimate(df, model, input_price_1k_tokens=0.0015, output_price_1k_tokens=0.002):
 
     n_queries = df.shape[0]
-    responses_cost =  (100 / 1_000) * output_price_1k_tokens * n_queries
+
+    expected_num_response_tokens = 100
+    responses_cost = output_price_1k_tokens * (expected_num_response_tokens / 1_000) * n_queries
 
     full_text = " ".join(df["title"].tolist()) + " ".join([ txt for txt in df["selftext"].tolist() if isinstance(txt, str)])
 
     # To get the tokeniser corresponding to a specific model in the OpenAI API:
     enc = tiktoken.encoding_for_model(model)
     
-    n_tokens = len(enc.encode(full_text))
+    n_input_tokens = len(enc.encode(full_text))
 
-    query_cost = input_price_1k_tokens * (n_tokens / 1_000)
+    query_cost = input_price_1k_tokens * (n_input_tokens / 1_000)
 
     resp = input(f"Estimated cost {query_cost + responses_cost :0.4f}$. Enter `yes` to continue:\n")
 
