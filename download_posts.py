@@ -94,4 +94,4 @@ if __name__ == "__main__":
         df, all_posts = save_posts(subreddit=SUBREDDIT, 
                                     post_type=post_type, 
                                     limit=LIMIT,
-                                    fetch_comments=True)
+                                    fetch_comments=False)
