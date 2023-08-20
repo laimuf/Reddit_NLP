@@ -37,9 +37,9 @@ def cost_estimate(df, model, input_price_1k_tokens=0.0015, output_price_1k_token
 
     query_cost = input_price_1k_tokens * (n_input_tokens / 1_000)
 
-    resp = input(f"Estimated cost {query_cost + responses_cost :0.4f}$. Enter `yes` to continue:\n")
+    resp = input(f"Estimated cost ${query_cost + responses_cost :0.4f}. Enter `yes` to continue:\n")
 
-    assert resp == "yes"
+    assert resp == "yes", "Do not proceed with GPT queries"
 
 
 
