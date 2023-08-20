@@ -4,12 +4,14 @@ from datetime import datetime
 import pandas as pd
 from credentials import praw_client_id, praw_client_secret, praw_user_agent
 from config import SUBREDDIT, POST_TYPES, LIMIT
+from praw.models import MoreComments
+from tqdm import tqdm
 
 reddit = praw.Reddit(client_id=praw_client_id, 
         client_secret=praw_client_secret, 
         user_agent=praw_user_agent)
 
-def _posts_to_df(posts):
+def _posts_to_df(posts, fetch_comments):
     # Create table columns to fill
     posts_data = {
                     'created_utc': [], 
@@ -21,9 +23,15 @@ def _posts_to_df(posts):
                     'selftext': [],
                     'author': [],
                     'url': [],
+                    'top_level_coments': [],
+                    
     }
 
-    for post in posts:
+    for post in tqdm(posts):
+        if fetch_comments:
+            top_level_coments = [(comment.author, comment.body) for comment in post.comments  if not isinstance(comment, MoreComments)]
+        else:
+            top_level_coments = []
         posts_data['created_utc'].append(post.created_utc)
         posts_data['title'].append(post.title)
         posts_data['score'].append(post.score)
@@ -33,6 +41,8 @@ def _posts_to_df(posts):
         posts_data['selftext'].append(post.selftext)
         posts_data['author'].append(post.author)
         posts_data['url'].append(post.url)
+        posts_data['top_level_coments'].append(top_level_coments)
+        
 
     df = pd.DataFrame(posts_data)
     
@@ -44,7 +54,8 @@ def save_posts(subreddit,
                 limit=50, 
                 reddit_subreddit=reddit.subreddit,
                 timestamp=True,
-                save_dir = "data/",):
+                save_dir = "data/",
+                fetch_comments=False):
 
     # Get the posts
     if post_type == 'hot':
@@ -55,7 +66,7 @@ def save_posts(subreddit,
         posts = reddit_subreddit(subreddit).top(limit=limit)
 
     # Parse the posts into a dataframe
-    df = _posts_to_df(posts)
+    df = _posts_to_df(posts, fetch_comments=fetch_comments)
 
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
@@ -69,7 +80,7 @@ def save_posts(subreddit,
         timestamp_str = ""
     
     # Save the posts
-    save_reddit_data_to = f'{save_dir}{subreddit}_{post_type}_{limit}posts{timestamp_str}.xlsx'
+    save_reddit_data_to = f'{save_dir}{subreddit}_{post_type}_{limit}_posts{timestamp_str}.xlsx'
     print(f"{save_reddit_data_to = }")
     df.to_excel(save_reddit_data_to)
 
@@ -82,4 +93,5 @@ if __name__ == "__main__":
 
         df, all_posts = save_posts(subreddit=SUBREDDIT, 
                                     post_type=post_type, 
-                                    limit=LIMIT)
+                                    limit=LIMIT,
+                                    fetch_comments=True)

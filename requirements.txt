@@ -1,6 +1,6 @@
 pandas
 openpyxl
-praw
+praw==7.7.0
 jupyterlab
 ipykernel
 openai
