@@ -90,10 +90,7 @@ if __name__ == "__main__":
             gpt_response_dict = json.loads(gpt_response)
         except:
             print(f"\n{id = }: bad response:\n{gpt_response}\n\n")
-            gpt_response_dict = {}
-            for topic in topics_list:
-                gpt_response_dict[topic] = None
-            gpt_response_dict["comment"] = None
+            gpt_response_dict = {"topic": [], "comment": None}
 
 
         df_checkpoint = df.iloc[: id].copy()
